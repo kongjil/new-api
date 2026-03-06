@@ -51,15 +51,15 @@ func GetStatus(c *gin.Context) {
 		"version":                     common.Version,
 		"start_time":                  common.StartTime,
 		"email_verification":          common.EmailVerificationEnabled,
-		"github_oauth":                common.GitHubOAuthEnabled,
-		"github_client_id":            common.GitHubClientId,
-		"discord_oauth":               system_setting.GetDiscordSettings().Enabled,
-		"discord_client_id":           system_setting.GetDiscordSettings().ClientId,
+		"github_oauth":                false,
+		"github_client_id":            "",
+		"discord_oauth":               false,
+		"discord_client_id":           "",
 		"linuxdo_oauth":               common.LinuxDOOAuthEnabled,
 		"linuxdo_client_id":           common.LinuxDOClientId,
 		"linuxdo_minimum_trust_level": common.LinuxDOMinimumTrustLevel,
-		"telegram_oauth":              common.TelegramOAuthEnabled,
-		"telegram_bot_name":           common.TelegramBotName,
+		"telegram_oauth":              false,
+		"telegram_bot_name":           "",
 		"system_name":                 common.SystemName,
 		"logo":                        common.Logo,
 		"footer_html":                 common.Footer,
@@ -78,7 +78,7 @@ func GetStatus(c *gin.Context) {
 		"custom_currency_exchange_rate": operation_setting.GetGeneralSetting().CustomCurrencyExchangeRate,
 		"enable_batch_update":           common.BatchUpdateEnabled,
 		"enable_drawing":                common.DrawingEnabled,
-		"enable_task":                   common.TaskEnabled,
+		"enable_task":                   false,
 		"enable_data_export":            common.DataExportEnabled,
 		"data_export_default_time":      common.DataExportDefaultTime,
 		"default_collapse_sidebar":      common.DefaultCollapseSidebar,
@@ -145,15 +145,7 @@ func GetStatus(c *gin.Context) {
 		providersInfo := make([]CustomOAuthInfo, 0, len(customProviders))
 		for _, p := range customProviders {
 			config := p.GetConfig()
-			providersInfo = append(providersInfo, CustomOAuthInfo{
-				Id:                    config.Id,
-				Name:                  config.Name,
-				Slug:                  config.Slug,
-				Icon:                  config.Icon,
-				ClientId:              config.ClientId,
-				AuthorizationEndpoint: config.AuthorizationEndpoint,
-				Scopes:                config.Scopes,
-			})
+			_ = config
 		}
 		data["custom_oauth_providers"] = providersInfo
 	}

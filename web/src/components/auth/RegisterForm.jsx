@@ -129,16 +129,9 @@ const RegisterForm = () => {
       return {};
     }
   }, [statusState?.status]);
-  const hasCustomOAuthProviders =
-    (status.custom_oauth_providers || []).length > 0;
+  const hasCustomOAuthProviders = false;
   const hasOAuthRegisterOptions = Boolean(
-    status.github_oauth ||
-      status.discord_oauth ||
-      status.oidc_enabled ||
-      status.wechat_login ||
-      status.linuxdo_oauth ||
-      status.telegram_oauth ||
-      hasCustomOAuthProviders,
+    status.wechat_login || status.linuxdo_oauth,
   );
 
   const [showEmailVerification, setShowEmailVerification] = useState(false);

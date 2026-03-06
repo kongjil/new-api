@@ -1036,24 +1036,6 @@ const SystemSetting = () => {
                     </Col>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                       <Form.Checkbox
-                        field='GitHubOAuthEnabled'
-                        noLabel
-                        onChange={(e) =>
-                          handleCheckboxChange('GitHubOAuthEnabled', e)
-                        }
-                      >
-                        {t('允许通过 GitHub 账户登录 & 注册')}
-                      </Form.Checkbox>
-                      <Form.Checkbox
-                        field='discord.enabled'
-                        noLabel
-                        onChange={(e) =>
-                          handleCheckboxChange('discord.enabled', e)
-                        }
-                      >
-                        {t('允许通过 Discord 账户登录 & 注册')}
-                      </Form.Checkbox>
-                      <Form.Checkbox
                         field='LinuxDOOAuthEnabled'
                         noLabel
                         onChange={(e) =>
@@ -1070,24 +1052,6 @@ const SystemSetting = () => {
                         }
                       >
                         {t('允许通过微信登录 & 注册')}
-                      </Form.Checkbox>
-                      <Form.Checkbox
-                        field='TelegramOAuthEnabled'
-                        noLabel
-                        onChange={(e) =>
-                          handleCheckboxChange('TelegramOAuthEnabled', e)
-                        }
-                      >
-                        {t('允许通过 Telegram 进行登录')}
-                      </Form.Checkbox>
-                      <Form.Checkbox
-                        field="['oidc.enabled']"
-                        noLabel
-                        onChange={(e) =>
-                          handleCheckboxChange('oidc.enabled', e)
-                        }
-                      >
-                        {t('允许通过 OIDC 进行登录')}
                       </Form.Checkbox>
                     </Col>
                   </Row>
@@ -1341,146 +1305,6 @@ const SystemSetting = () => {
                 </Form.Section>
               </Card>
               <Card>
-                <Form.Section text={t('配置 OIDC')}>
-                  <Text>
-                    {t(
-                      '用以支持通过 OIDC 登录，例如 Okta、Auth0 等兼容 OIDC 协议的 IdP',
-                    )}
-                  </Text>
-                  <Banner
-                    type='info'
-                    description={`${t('主页链接填')} ${inputs.ServerAddress ? inputs.ServerAddress : t('网站地址')}，${t('重定向 URL 填')} ${inputs.ServerAddress ? inputs.ServerAddress : t('网站地址')}/oauth/oidc`}
-                    style={{ marginBottom: 20, marginTop: 16 }}
-                  />
-                  <Text>
-                    {t(
-                      '若你的 OIDC Provider 支持 Discovery Endpoint，你可以仅填写 OIDC Well-Known URL，系统会自动获取 OIDC 配置',
-                    )}
-                  </Text>
-                  <Row
-                    gutter={{ xs: 8, sm: 16, md: 24, lg: 24, xl: 24, xxl: 24 }}
-                  >
-                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                      <Form.Input
-                        field="['oidc.well_known']"
-                        label={t('Well-Known URL')}
-                        placeholder={t('请输入 OIDC 的 Well-Known URL')}
-                      />
-                    </Col>
-                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                      <Form.Input
-                        field="['oidc.client_id']"
-                        label={t('Client ID')}
-                        placeholder={t('输入 OIDC 的 Client ID')}
-                      />
-                    </Col>
-                  </Row>
-                  <Row
-                    gutter={{ xs: 8, sm: 16, md: 24, lg: 24, xl: 24, xxl: 24 }}
-                  >
-                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                      <Form.Input
-                        field="['oidc.client_secret']"
-                        label={t('Client Secret')}
-                        type='password'
-                        placeholder={t('敏感信息不会发送到前端显示')}
-                      />
-                    </Col>
-                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                      <Form.Input
-                        field="['oidc.authorization_endpoint']"
-                        label={t('Authorization Endpoint')}
-                        placeholder={t('输入 OIDC 的 Authorization Endpoint')}
-                      />
-                    </Col>
-                  </Row>
-                  <Row
-                    gutter={{ xs: 8, sm: 16, md: 24, lg: 24, xl: 24, xxl: 24 }}
-                  >
-                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                      <Form.Input
-                        field="['oidc.token_endpoint']"
-                        label={t('Token Endpoint')}
-                        placeholder={t('输入 OIDC 的 Token Endpoint')}
-                      />
-                    </Col>
-                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                      <Form.Input
-                        field="['oidc.user_info_endpoint']"
-                        label={t('User Info Endpoint')}
-                        placeholder={t('输入 OIDC 的 Userinfo Endpoint')}
-                      />
-                    </Col>
-                  </Row>
-                  <Button onClick={submitOIDCSettings}>
-                    {t('保存 OIDC 设置')}
-                  </Button>
-                </Form.Section>
-              </Card>
-
-              <Card>
-                <Form.Section text={t('配置 GitHub OAuth App')}>
-                  <Text>{t('用以支持通过 GitHub 进行登录注册')}</Text>
-                  <Banner
-                    type='info'
-                    description={`${t('Homepage URL 填')} ${inputs.ServerAddress ? inputs.ServerAddress : t('网站地址')}，${t('Authorization callback URL 填')} ${inputs.ServerAddress ? inputs.ServerAddress : t('网站地址')}/oauth/github`}
-                    style={{ marginBottom: 20, marginTop: 16 }}
-                  />
-                  <Row
-                    gutter={{ xs: 8, sm: 16, md: 24, lg: 24, xl: 24, xxl: 24 }}
-                  >
-                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                      <Form.Input
-                        field='GitHubClientId'
-                        label={t('GitHub Client ID')}
-                      />
-                    </Col>
-                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                      <Form.Input
-                        field='GitHubClientSecret'
-                        label={t('GitHub Client Secret')}
-                        type='password'
-                        placeholder={t('敏感信息不会发送到前端显示')}
-                      />
-                    </Col>
-                  </Row>
-                  <Button onClick={submitGitHubOAuth}>
-                    {t('保存 GitHub OAuth 设置')}
-                  </Button>
-                </Form.Section>
-              </Card>
-              <Card>
-                <Form.Section text={t('配置 Discord OAuth')}>
-                  <Text>{t('用以支持通过 Discord 进行登录注册')}</Text>
-                  <Banner
-                    type='info'
-                    description={`${t('Homepage URL 填')} ${inputs.ServerAddress ? inputs.ServerAddress : t('网站地址')}，${t('Authorization callback URL 填')} ${inputs.ServerAddress ? inputs.ServerAddress : t('网站地址')}/oauth/discord`}
-                    style={{ marginBottom: 20, marginTop: 16 }}
-                  />
-                  <Row
-                    gutter={{ xs: 8, sm: 16, md: 24, lg: 24, xl: 24, xxl: 24 }}
-                  >
-                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                      <Form.Input
-                        field="['discord.client_id']"
-                        label={t('Discord Client ID')}
-                      />
-                    </Col>
-                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                      <Form.Input
-                        field="['discord.client_secret']"
-                        label={t('Discord Client Secret')}
-                        type='password'
-                        placeholder={t('敏感信息不会发送到前端显示')}
-                      />
-                    </Col>
-                  </Row>
-                  <Button onClick={submitDiscordOAuth}>
-                    {t('保存 Discord OAuth 设置')}
-                  </Button>
-                </Form.Section>
-              </Card>
-              <Card>
                 <Form.Section text={t('配置 Linux DO OAuth')}>
                   <Text>
                     {t('用以支持通过 Linux DO 进行登录注册')}
@@ -1535,7 +1359,6 @@ const SystemSetting = () => {
                 </Form.Section>
               </Card>
 
-              <CustomOAuthSetting serverAddress={inputs.ServerAddress} />
 
               <Card>
                 <Form.Section text={t('配置 WeChat Server')}>

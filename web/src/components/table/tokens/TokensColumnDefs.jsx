@@ -252,6 +252,23 @@ const renderAllowIps = (text, t) => {
   return <Space wrap>{ipTags}</Space>;
 };
 
+const formatTokenCount = (value) => {
+  const num = Number(value || 0);
+  if (num >= 1000000000) return `${(num / 1000000000).toFixed(2)}B`;
+  if (num >= 1000000) return `${(num / 1000000).toFixed(2)}M`;
+  if (num >= 1000) return `${(num / 1000).toFixed(2)}K`;
+  return `${num}`;
+};
+
+const renderTokenUsageStat = (value) => {
+  const full = Number(value || 0).toLocaleString();
+  return (
+    <Tooltip content={full} position='top'>
+      <span>{formatTokenCount(value)}</span>
+    </Tooltip>
+  );
+};
+
 // Render separate quota usage column
 const renderQuotaUsage = (text, record, t) => {
   const { Paragraph } = Typography;
@@ -450,6 +467,18 @@ export const getTokensColumns = ({
       title: t('剩余额度/总额度'),
       key: 'quota_usage',
       render: (text, record) => renderQuotaUsage(text, record, t),
+    },
+    {
+      title: t('累计Tokens'),
+      dataIndex: 'used_tokens_total',
+      key: 'used_tokens_total',
+      render: (text, record) => renderTokenUsageStat(record.used_tokens_total),
+    },
+    {
+      title: t('24h Tokens'),
+      dataIndex: 'used_tokens_24h',
+      key: 'used_tokens_24h',
+      render: (text, record) => renderTokenUsageStat(record.used_tokens_24h),
     },
     {
       title: t('分组'),

@@ -28,6 +28,8 @@ type Token struct {
 	UsedQuota          int            `json:"used_quota" gorm:"default:0"` // used quota
 	Group              string         `json:"group" gorm:"default:''"`
 	CrossGroupRetry    bool           `json:"cross_group_retry"` // 跨分组重试，仅auto分组有效
+	UsedTokensTotal    int64          `json:"used_tokens_total" gorm:"-"`
+	UsedTokens24h      int64          `json:"used_tokens_24h" gorm:"-"`
 	DeletedAt          gorm.DeletedAt `gorm:"index"`
 }
 
@@ -61,6 +63,10 @@ func GetAllUserTokens(userId int, startIdx int, num int) ([]*Token, error) {
 	var tokens []*Token
 	var err error
 	err = DB.Where("user_id = ?", userId).Order("id desc").Limit(num).Offset(startIdx).Find(&tokens).Error
+	if err != nil {
+		return tokens, err
+	}
+	attachTokenUsageStats(tokens)
 	return tokens, err
 }
 
@@ -161,7 +167,47 @@ func SearchUserTokens(userId int, keyword string, token string, offset int, limi
 		common.SysError("failed to search tokens: " + err.Error())
 		return nil, 0, errors.New("搜索令牌失败")
 	}
+	attachTokenUsageStats(tokens)
 	return tokens, total, nil
+}
+
+func attachTokenUsageStats(tokens []*Token) {
+	if len(tokens) == 0 {
+		return
+	}
+
+	tokenIds := make([]int, 0, len(tokens))
+	statsByToken := make(map[int]*Token)
+	for _, token := range tokens {
+		tokenIds = append(tokenIds, token.Id)
+		statsByToken[token.Id] = token
+	}
+
+	type tokenUsageRow struct {
+		TokenId         int
+		UsedTokensTotal int64
+		UsedTokens24h   int64
+	}
+
+	var rows []tokenUsageRow
+	now := common.GetTimestamp()
+	dayAgo := now - 24*60*60
+	err := LOG_DB.Model(&Log{}).
+		Select("token_id, COALESCE(SUM(prompt_tokens + completion_tokens), 0) AS used_tokens_total, COALESCE(SUM(CASE WHEN created_at >= ? THEN prompt_tokens + completion_tokens ELSE 0 END), 0) AS used_tokens_24h", dayAgo).
+		Where("token_id IN ?", tokenIds).
+		Group("token_id").
+		Scan(&rows).Error
+	if err != nil {
+		common.SysError("failed to attach token usage stats: " + err.Error())
+		return
+	}
+
+	for _, row := range rows {
+		if token, ok := statsByToken[row.TokenId]; ok {
+			token.UsedTokensTotal = row.UsedTokensTotal
+			token.UsedTokens24h = row.UsedTokens24h
+		}
+	}
 }
 
 func ValidateUserToken(key string) (token *Token, err error) {
