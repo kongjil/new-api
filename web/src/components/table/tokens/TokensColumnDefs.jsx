@@ -260,11 +260,22 @@ const formatTokenCount = (value) => {
   return `${num}`;
 };
 
+const pickTokenStatValue = (record, keys = []) => {
+  for (const key of keys) {
+    if (record && record[key] !== undefined && record[key] !== null && record[key] !== '') {
+      const n = Number(record[key]);
+      if (!Number.isNaN(n)) return n;
+    }
+  }
+  return 0;
+};
+
 const renderTokenUsageStat = (value) => {
-  const full = Number(value || 0).toLocaleString();
+  const n = Number(value || 0);
+  const full = n.toLocaleString();
   return (
     <Tooltip content={full} position='top'>
-      <span>{formatTokenCount(value)}</span>
+      <span>{formatTokenCount(n)}</span>
     </Tooltip>
   );
 };
@@ -472,13 +483,19 @@ export const getTokensColumns = ({
       title: t('累计Tokens'),
       dataIndex: 'used_tokens_total',
       key: 'used_tokens_total',
-      render: (text, record) => renderTokenUsageStat(record.used_tokens_total),
+      render: (text, record) =>
+        renderTokenUsageStat(
+          pickTokenStatValue(record, ['used_tokens_total', 'usedTokensTotal', 'tokens_total']),
+        ),
     },
     {
       title: t('24h Tokens'),
       dataIndex: 'used_tokens_24h',
       key: 'used_tokens_24h',
-      render: (text, record) => renderTokenUsageStat(record.used_tokens_24h),
+      render: (text, record) =>
+        renderTokenUsageStat(
+          pickTokenStatValue(record, ['used_tokens_24h', 'usedTokens24h', 'tokens_24h', 'day_tokens']),
+        ),
     },
     {
       title: t('分组'),

@@ -184,9 +184,9 @@ func attachTokenUsageStats(tokens []*Token) {
 	}
 
 	type tokenUsageRow struct {
-		TokenId         int
-		UsedTokensTotal int64
-		UsedTokens24h   int64
+		TokenId         int   `gorm:"column:token_id"`
+		UsedTokensTotal int64 `gorm:"column:used_tokens_total"`
+		UsedTokens24h   int64 `gorm:"column:used_tokens_24h"`
 	}
 
 	var rows []tokenUsageRow
